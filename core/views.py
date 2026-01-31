@@ -7,8 +7,8 @@ from core.constants import BRAND_NAME
 schema_view = get_schema_view(
     openapi.Info(
         title=BRAND_NAME,
-        default_version='v1',
-        description='OpenAPI Specification',
+        default_version="v1",
+        description="OpenAPI Specification",
     ),
     public=True,
     permission_classes=[permissions.AllowAny],
