@@ -5,3 +5,5 @@ drf-yasg
 djangorestframework-simplejwt
 django-cors-headers
 dj-database-url
+black
+isort
