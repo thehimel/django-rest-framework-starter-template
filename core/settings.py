@@ -44,7 +44,7 @@ if ENVIRONMENT == DEV:
     CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
 else:
-    ALLOWED_HOSTS = [DJANGO_BACKEND_HOST]
+    ALLOWED_HOSTS = [DJANGO_BACKEND_HOST, ".vercel.app"]
     CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
     CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
 
@@ -83,6 +83,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # Must be at the top.
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # To serve static files in PaaS. To be removed if S3 is being used.
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -110,7 +111,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "core.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.app"
 
 
 # Database
@@ -161,6 +162,9 @@ STATIC_DIR = BASE_DIR / "static"
 # Keep your static files here.
 # collectstatic will use this directory to generate static files in STATIC_ROOT.
 STATICFILES_DIRS = [STATIC_DIR] if STATIC_DIR.exists() else []
+
+# WhiteNoise configuration for serving static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
