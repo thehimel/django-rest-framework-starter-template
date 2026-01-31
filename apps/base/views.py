@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.views.generic import TemplateView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -16,6 +17,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["brand_name"] = BRAND_NAME
+        context["docs_disabled"] = settings.ENVIRONMENT == settings.PROD
         return context
 
 

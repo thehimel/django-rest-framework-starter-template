@@ -59,6 +59,12 @@
             background: #fafafa;
             border-color: #d4d4d8;
         }
+        a.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            border-color: #e4e4e7;
+        }
     </style>
 </head>
 <body>
@@ -66,8 +72,28 @@
         <h1>{{ brand_name }} API</h1>
         <p>Django REST Framework Starter Template</p>
         <div class="links">
-            <a href="/swagger/">Swagger UI</a>
-            <a href="/redoc/">ReDoc</a>
+            <a
+                href="/swagger/"
+                {% if docs_disabled %}
+                    class="disabled"
+                    tabindex="-1"
+                    aria-disabled="true"
+                    title="Swagger UI is disabled in production"
+                {% endif %}
+            >
+                Swagger UI
+            </a>
+            <a
+                href="/redoc/"
+                {% if docs_disabled %}
+                    class="disabled"
+                    tabindex="-1"
+                    aria-disabled="true"
+                    title="ReDoc is disabled in production"
+                {% endif %}
+            >
+                ReDoc
+            </a>
             <a href="/admin/">Admin</a>
         </div>
     </div>
