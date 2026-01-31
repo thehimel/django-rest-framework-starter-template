@@ -43,6 +43,9 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+        .links a {
+            position: relative;
+        }
         a {
             color: #09090b;
             text-decoration: none;
@@ -61,9 +64,23 @@
         }
         a.disabled {
             opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
             border-color: #e4e4e7;
+            cursor: default;
+        }
+        a[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 0.5rem;
+            padding: 0.35rem 0.6rem;
+            background: #111827;
+            color: #f8fafc;
+            font-size: 0.75rem;
+            border-radius: 0.3rem;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -78,7 +95,8 @@
                     class="disabled"
                     tabindex="-1"
                     aria-disabled="true"
-                    title="Swagger UI is disabled in production"
+                    data-tooltip="Swagger UI is disabled in production"
+                    onclick="return false;"
                 {% endif %}
             >
                 Swagger UI
@@ -89,7 +107,8 @@
                     class="disabled"
                     tabindex="-1"
                     aria-disabled="true"
-                    title="ReDoc is disabled in production"
+                    data-tooltip="ReDoc is disabled in production"
+                    onclick="return false;"
                 {% endif %}
             >
                 ReDoc
