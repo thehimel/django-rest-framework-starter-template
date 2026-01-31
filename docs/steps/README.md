@@ -169,6 +169,11 @@ Created comprehensive documentation:
 - `docs/design/README.md` for ERD generation
 - Updated project structure in all docs
 
+## 18. Vercel Deployment Notes
+
+- **Build pipeline:** Vercel’s configuration lives in [`vercel.json`](../../vercel.json), which points the Python server to `core/wsgi.py` and runs `build.sh` via the static builder.
+- **Pyproject issue:** Vercel’s `uv lock` step errors with `No 'project' table found` when `pyproject.toml` lacks a `[project]` table; see [`docs/issues.md`](../issues.md) for the logged error.
+
 ## Project Structure
 
 ```
