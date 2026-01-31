@@ -178,6 +178,7 @@ SIMPLE_JWT = {
 
 SWAGGER_SETTINGS = {
     "LOGIN_URL": "/admin/login/",  # Redirect Django Login button to admin login
+    "PERSIST_AUTH": True,  # Persist authorization token across page refreshes
     "SECURITY_DEFINITIONS": {
         "Bearer": {
             "type": "apiKey",
