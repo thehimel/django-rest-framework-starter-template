@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # ---
-    'apps.scrapers.apps.ScrapersConfig',
+    'apps.base.apps.BaseConfig',
     # --- REST APIs and authentication
     'drf_yasg',
     'corsheaders',
