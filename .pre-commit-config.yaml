@@ -23,3 +23,12 @@ repos:
     hooks:
       - id: isort
         args: ['--profile', 'black', '--line-length=120']
+
+  - repo: local
+    hooks:
+      - id: django-tests
+        name: Run Django tests
+        entry: .venv/bin/python manage.py test .
+        language: system
+        pass_filenames: false
+        always_run: true

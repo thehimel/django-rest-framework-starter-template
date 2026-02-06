@@ -1,0 +1,34 @@
+[run]
+source = .
+omit =
+    */migrations/*
+    */tests/*
+    */tests.py
+    */test_*.py
+    */__pycache__/*
+    */venv/*
+    */.venv/*
+    */env/*
+    */build/*
+    */dist/*
+    */htmlcov/*
+    */.coverage
+    manage.py
+    core/wsgi.py
+    core/asgi.py
+    */settings/*
+    */staticfiles/*
+    */media/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+[html]
+directory = htmlcov

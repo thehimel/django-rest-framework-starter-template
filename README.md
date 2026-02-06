@@ -20,6 +20,7 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 - **Security headers** and best practices
 - **Structured app organization** with `apps/` directory
 - **Code quality tools**: Black, isort, and pre-commit hooks
+- **Testing**: Django test framework with coverage reporting
 
 ## Quick Start
 
@@ -78,6 +79,8 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 ├── .env.template
 ├── pyproject.toml         # Black and isort configuration
 ├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── .coveragerc            # Coverage configuration
+├── coverage.sh            # Run test coverage
 ├── init.sh                 # Initialization script
 └── erd.sh                  # Generate Entity Relationship Diagram
 ```
@@ -110,6 +113,26 @@ Pre-commit hooks run automatically on every commit. To bypass (not recommended):
 ```bash
 git commit --no-verify
 ```
+
+## Testing
+
+The project includes test coverage configuration and automated test execution via pre-commit hooks.
+
+### Run tests
+```bash
+python manage.py test .
+```
+
+### Run coverage
+```bash
+./coverage.sh
+```
+
+This generates an HTML coverage report in `htmlcov/` directory. Coverage configuration is defined in [`.coveragerc`](.coveragerc).
+
+### Pre-commit Testing
+
+Tests run automatically before each commit via pre-commit hooks (see [`.pre-commit-config.yaml`](.pre-commit-config.yaml)). The hook runs Django tests to ensure code quality before commits.
 
 ## Authentication
 

@@ -139,6 +139,7 @@ Set up automated code formatting:
   - Basic file checks (trailing whitespace, file endings, etc.)
   - Black code formatter
   - isort import sorter
+  - Django test execution
 - Added `pre-commit install` to `init.sh`
 
 ## 15. ERD Generation Setup
@@ -216,6 +217,8 @@ jobrio-backend/
 ├── .env.template
 ├── pyproject.toml         # Black and isort configuration
 ├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── .coveragerc            # Coverage configuration
+├── coverage.sh            # Run test coverage
 ├── init.sh                 # Initialization script
 ├── erd.sh                  # Generate Entity Relationship Diagram
 └── README.md
@@ -241,6 +244,8 @@ jobrio-backend/
 - Black code formatter (120 character line length)
 - isort import sorter (black-compatible)
 - Pre-commit hooks to enforce formatting automatically
+- Django test framework with coverage reporting
+- Automated test execution via pre-commit hooks
 
 ### Development Tools
 - django-extensions for ERD generation
