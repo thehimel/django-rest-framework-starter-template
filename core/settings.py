@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -17,7 +18,7 @@ import dj_database_url
 from decouple import config
 from django.core.management.utils import get_random_secret_key
 
-from core.constants import BRAND_NAME, DEV, PROD
+from core.constants import SELECTED_ENVIRONMENT, constants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,27 +27,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-ENVIRONMENT = config("ENVIRONMENT", default=DEV)
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if ENVIRONMENT == DEV else config("DEBUG", cast=bool, default=False)
+DEBUG = constants.DEBUG
+FRONTEND_URL = constants.FRONTEND_URL
+DJANGO_BACKEND_HOST = constants.DJANGO_BACKEND_HOST
 
-FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:3000")
-DJANGO_BACKEND_HOST = config("DJANGO_BACKEND_HOST", default="localhost")
-
+ALLOWED_HOSTS = constants.ALLOWED_HOSTS
 CORS_ALLOW_ALL_ORIGINS = False
-
-if ENVIRONMENT == DEV:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-    CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
-else:
-    ALLOWED_HOSTS = [DJANGO_BACKEND_HOST, ".vercel.app"]
-    CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
-    CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
+CORS_ALLOWED_ORIGINS = constants.CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS = constants.CSRF_TRUSTED_ORIGINS
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -54,9 +45,9 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = False if ENVIRONMENT == DEV else True
-SESSION_COOKIE_SECURE = False if ENVIRONMENT == DEV else True
-CSRF_COOKIE_SECURE = False if ENVIRONMENT == DEV else True
+SECURE_SSL_REDIRECT = constants.SECURE_SSL_REDIRECT
+SESSION_COOKIE_SECURE = constants.SESSION_COOKIE_SECURE
+CSRF_COOKIE_SECURE = constants.CSRF_COOKIE_SECURE
 
 
 # Application definition
@@ -116,10 +107,11 @@ WSGI_APPLICATION = "core.wsgi.app"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-database_url = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-
-if ENVIRONMENT == PROD:
-    database_url = config("DATABASE_URL")
+# Use SQLite for tests so the test runner never touches the production database.
+if "test" in sys.argv:
+    database_url = "sqlite:///:memory:"
+else:
+    database_url = constants.DATABASE_URL or f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
 DATABASES = {"default": dj_database_url.parse(database_url, conn_max_age=600)}
 

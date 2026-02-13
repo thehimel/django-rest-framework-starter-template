@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.base.serializers import HealthCheckSerializer, ProtectedDataSerializer
-from core.constants import BRAND_NAME, VERSION
+from core.constants import Environment, constants
 
 
 class IndexView(TemplateView):
@@ -16,8 +16,8 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["brand_name"] = BRAND_NAME
-        context["docs_disabled"] = settings.ENVIRONMENT == settings.PROD
+        context["brand_name"] = constants.BRAND_NAME
+        context["docs_disabled"] = settings.SELECTED_ENVIRONMENT == Environment.PROD
         return context
 
 
@@ -32,7 +32,7 @@ class HealthCheckAPIView(APIView):
     def get(self, request):
         """Health check endpoint."""
         serializer = HealthCheckSerializer(
-            {"status": "healthy", "message": f"{BRAND_NAME} API is running", "version": VERSION}
+            {"status": "healthy", "message": f"{constants.BRAND_NAME} API is running", "version": constants.VERSION}
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -62,9 +62,12 @@ Set up Swagger/ReDoc documentation:
 
 Set up environment-based settings:
 
-- Created `core/constants.py` with `DEV`, `PROD`, `BRAND_NAME`, `VERSION`
-- Updated `settings.py` to use `decouple` for environment variables
-- Configured environment-based `DEBUG`, `ALLOWED_HOSTS`, CORS, and security settings
+- Created `core/constants/` package with:
+  - `__init__.py`: `Environment` enum (DEV/PROD) and loader that imports `dev` or `prod` based on the `ENVIRONMENT` env var and exports `SELECTED_ENVIRONMENT` and `constants`
+  - `dev.py`: development constants (BRAND_NAME, VERSION, ALLOWED_HOSTS, CORS, DEBUG, security flags, DATABASE_URL=None for SQLite)
+  - `prod.py`: production constants (same names, values from env/config)
+- Updated `settings.py` to use `SELECTED_ENVIRONMENT` and `constants` from `core.constants`; all environment-dependent settings read from `constants.*`
+- Tests use in-memory SQLite (`"test" in sys.argv`) so the test runner never touches the production database
 - Created `.env.template` with all required variables
 
 ## 8. Database Configuration
@@ -72,7 +75,8 @@ Set up environment-based settings:
 Configured database settings:
 
 - Added `dj-database-url` for flexible database configuration
-- Set up SQLite for development, PostgreSQL/MySQL via `DATABASE_URL` for production
+- Set up SQLite for development (default), PostgreSQL/MySQL via `constants.DATABASE_URL` for production
+- Tests use in-memory SQLite so the test runner never touches the production database (avoids hangs in CI/prod-like environments)
 - Added connection pooling with `conn_max_age=600`
 
 ## 9. Security Headers
@@ -203,7 +207,10 @@ jobrio-backend/
 │   ├── settings.py        # Main configuration
 │   ├── urls.py            # Root URL configuration
 │   ├── views.py           # Schema view for API docs
-│   ├── constants.py       # Environment constants
+│   ├── constants/         # Environment-specific constants (dev/prod)
+│   │   ├── __init__.py    # Environment enum and loader
+│   │   ├── dev.py         # Development constants
+│   │   └── prod.py        # Production constants
 │   ├── wsgi.py
 │   └── asgi.py
 ├── docs/

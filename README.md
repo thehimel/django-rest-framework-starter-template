@@ -73,7 +73,10 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 │   ├── settings.py        # Main configuration
 │   ├── urls.py            # Root URL configuration
 │   ├── views.py           # Schema view for API docs
-│   └── constants.py       # Environment constants
+│   └── constants/         # Environment-specific constants (dev/prod)
+│       ├── __init__.py    # Environment enum and loader
+│       ├── dev.py         # Development constants
+│       └── prod.py        # Production constants
 ├── manage.py
 ├── requirements.txt
 ├── .env.template
@@ -90,9 +93,11 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 The project uses environment variables for configuration. Copy `.env.template` to `.env` and update the values:
 
 - `SECRET_KEY`: Django secret key
-- `ENVIRONMENT`: `DEV` or `PROD`
+- `ENVIRONMENT`: `DEV` or `PROD` — controls which constants are loaded from `core/constants/dev.py` or `core/constants/prod.py`
 - `DATABASE_URL`: Database connection string (for production)
 - `FRONTEND_URL`: Frontend URL for CORS
+
+Environment-based values (e.g. `ALLOWED_HOSTS`, `DEBUG`, `CORS_*`) are defined per environment in `core/constants/dev.py` and `core/constants/prod.py`; the loader in `core/constants/__init__.py` selects the correct set based on the `ENVIRONMENT` env var and exposes it as `SELECTED_ENVIRONMENT`. Tests always use an in-memory SQLite database and never connect to the production database.
 
 ## Code Formatting
 
