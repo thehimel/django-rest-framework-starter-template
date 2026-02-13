@@ -1,15 +1,8 @@
-"""Environment enum and environment-specific constants (dev or prod)."""
-
-from enum import Enum
+"""Environment-specific constants."""
 
 from decouple import config
 
-
-class Environment(str, Enum):
-    """Application environment."""
-
-    DEV = "DEV"
-    PROD = "PROD"
+from core.constants.env import Environment
 
 
 def _load_constants():

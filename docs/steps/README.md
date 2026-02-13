@@ -63,10 +63,12 @@ Set up Swagger/ReDoc documentation:
 Set up environment-based settings:
 
 - Created `core/constants/` package with:
-  - `__init__.py`: `Environment` enum (DEV/PROD) and loader that imports `dev` or `prod` based on the `ENVIRONMENT` env var and exports `SELECTED_ENVIRONMENT` and `constants`
+  - `env.py`: **Environment** enum (DEV/PROD)
+  - `__init__.py`: imports **Environment** from `.env`, loader that imports `dev` or `prod` based on the `ENVIRONMENT` env var, exports `SELECTED_ENVIRONMENT` and `constants`
   - `dev.py`: development constants (BRAND_NAME, VERSION, ALLOWED_HOSTS, CORS, DEBUG, security flags, DATABASE_URL=None for SQLite)
   - `prod.py`: production constants (same names, values from env/config)
 - Updated `settings.py` to use `SELECTED_ENVIRONMENT` and `constants` from `core.constants`; all environment-dependent settings read from `constants.*`
+- **Management commands**: `manage.py` parses `--env` / `-e` (argparse, choices from `core.constants.env.Environment`) before Django loads and sets `os.environ["ENVIRONMENT"]` (always in capital; input is case-insensitive). Run e.g. `python manage.py migrate --env=prod` without changing `.env`. When `--env` is omitted, `.env` is used as usual
 - Tests use in-memory SQLite (`"test" in sys.argv`) so the test runner never touches the production database
 - Created `.env.template` with all required variables
 
@@ -208,7 +210,8 @@ jobrio-backend/
 │   ├── urls.py            # Root URL configuration
 │   ├── views.py           # Schema view for API docs
 │   ├── constants/         # Environment-specific constants (dev/prod)
-│   │   ├── __init__.py    # Environment enum and loader
+│   │   ├── __init__.py    # Loader; exports SELECTED_ENVIRONMENT, constants
+│   │   ├── env.py         # Environment enum (DEV/PROD)
 │   │   ├── dev.py         # Development constants
 │   │   └── prod.py        # Production constants
 │   ├── wsgi.py

@@ -74,7 +74,8 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 │   ├── urls.py            # Root URL configuration
 │   ├── views.py           # Schema view for API docs
 │   └── constants/         # Environment-specific constants (dev/prod)
-│       ├── __init__.py    # Environment enum and loader
+│       ├── __init__.py    # Loader; exports SELECTED_ENVIRONMENT, constants
+│       ├── env.py         # Environment enum (DEV/PROD)
 │       ├── dev.py         # Development constants
 │       └── prod.py        # Production constants
 ├── manage.py
@@ -98,6 +99,18 @@ The project uses environment variables for configuration. Copy `.env.template` t
 - `FRONTEND_URL`: Frontend URL for CORS
 
 Environment-based values (e.g. `ALLOWED_HOSTS`, `DEBUG`, `CORS_*`) are defined per environment in `core/constants/dev.py` and `core/constants/prod.py`; the loader in `core/constants/__init__.py` selects the correct set based on the `ENVIRONMENT` env var and exposes it as `SELECTED_ENVIRONMENT`. Tests always use an in-memory SQLite database and never connect to the production database.
+
+### Overriding environment for management commands
+
+By default, **ENVIRONMENT** is read from `.env` (or the default). You can override it for a single run by passing `--env` (or `-e`) to any management command. Values are those in [core/constants/env.py](core/constants/env.py) (`Environment` enum): `DEV`, `PROD`. Input is **case-insensitive** (e.g. `prod`, `PROD`); the value is always set in capital.
+
+```bash
+python manage.py migrate --env=prod
+python manage.py runserver --env prod
+python manage.py test -e prod
+```
+
+The flag is parsed in [manage.py](manage.py) before Django loads, so the chosen environment is used for settings and constants. When you omit `--env`, `.env` (or the default) is used as before.
 
 ## Code Formatting
 
