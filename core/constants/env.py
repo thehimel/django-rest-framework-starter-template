@@ -8,3 +8,4 @@ class Environment(str, Enum):
 
     DEV = "DEV"
     PROD = "PROD"
+    DEV_REMOTE = "DEV_REMOTE"

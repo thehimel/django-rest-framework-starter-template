@@ -47,7 +47,7 @@ Configured CORS for frontend communication:
 
 - Added `corsheaders` to `INSTALLED_APPS`
 - Added `CorsMiddleware` at the top of middleware stack
-- Configured CORS settings based on environment (DEV/PROD)
+- Configured CORS settings based on environment (DEV, PROD, DEV_REMOTE)
 - Set `CORS_ALLOW_CREDENTIALS = True` for JWT authentication
 
 ## 6. Added API Documentation
@@ -63,12 +63,12 @@ Set up Swagger/ReDoc documentation:
 Set up environment-based settings:
 
 - Created `core/constants/` package with:
-  - `env.py`: **Environment** enum (DEV/PROD)
-  - `__init__.py`: imports **Environment** from `.env`, loader that imports `dev` or `prod` based on the `ENVIRONMENT` env var, exports `SELECTED_ENVIRONMENT` and `constants`
+  - `env.py`: **Environment** enum (DEV, PROD, DEV_REMOTE)
+  - `__init__.py`: imports **Environment** from `.env`, loader that imports `dev` or `prod` based on the `ENVIRONMENT` env var; for `DEV_REMOTE` it loads dev constants and overrides `DATABASE_URL` from `config("DATABASE_URL")`. Exports `SELECTED_ENVIRONMENT` and `constants`.
   - `dev.py`: development constants (BRAND_NAME, VERSION, ALLOWED_HOSTS, CORS, DEBUG, security flags, DATABASE_URL=None for SQLite)
   - `prod.py`: production constants (same names, values from env/config)
 - Updated `settings.py` to use `SELECTED_ENVIRONMENT` and `constants` from `core.constants`; all environment-dependent settings read from `constants.*`
-- **Management commands**: `manage.py` parses `--env` / `-e` (argparse, choices from `core.constants.env.Environment`) before Django loads and sets `os.environ["ENVIRONMENT"]` (always in capital; input is case-insensitive). Run e.g. `python manage.py migrate --env=prod` without changing `.env`. When `--env` is omitted, `.env` is used as usual
+- **Management commands**: `manage.py` parses `--env` / `-e` (argparse, choices from `core.constants.env.Environment`: dev, prod, dev_remote) before Django loads and sets `os.environ["ENVIRONMENT"]` (always in capital; input is case-insensitive). Run e.g. `python manage.py migrate --env=prod` or `python manage.py migrate --env=dev_remote` to use prod DB locally. When `--env` is omitted, `.env` is used as usual
 - Tests use in-memory SQLite (`"test" in sys.argv`) so the test runner never touches the production database
 - Created `.env.template` with all required variables
 
@@ -211,7 +211,7 @@ jobrio-backend/
 │   ├── views.py           # Schema view for API docs
 │   ├── constants/         # Environment-specific constants (dev/prod)
 │   │   ├── __init__.py    # Loader; exports SELECTED_ENVIRONMENT, constants
-│   │   ├── env.py         # Environment enum (DEV/PROD)
+│   │   ├── env.py         # Environment enum (DEV, PROD, DEV_REMOTE)
 │   │   ├── dev.py         # Development constants
 │   │   └── prod.py        # Production constants
 │   ├── wsgi.py

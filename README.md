@@ -75,7 +75,7 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 │   ├── views.py           # Schema view for API docs
 │   └── constants/         # Environment-specific constants (dev/prod)
 │       ├── __init__.py    # Loader; exports SELECTED_ENVIRONMENT, constants
-│       ├── env.py         # Environment enum (DEV/PROD)
+│       ├── env.py         # Environment enum (DEV, PROD, DEV_REMOTE)
 │       ├── dev.py         # Development constants
 │       └── prod.py        # Production constants
 ├── manage.py
@@ -94,7 +94,7 @@ A production-ready Django REST Framework starter template with JWT authenticatio
 The project uses environment variables for configuration. Copy `.env.template` to `.env` and update the values:
 
 - `SECRET_KEY`: Django secret key
-- `ENVIRONMENT`: `DEV` or `PROD` — controls which constants are loaded from `core/constants/dev.py` or `core/constants/prod.py`
+- `ENVIRONMENT`: `DEV`, `PROD`, or `DEV_REMOTE` — controls which constants are loaded. `DEV` and `PROD` use `core/constants/dev.py` or `core/constants/prod.py`. `DEV_REMOTE` uses dev constants (DEBUG, CORS, etc.) but sets the database from `DATABASE_URL` in `.env`, so you can run locally against a remote (e.g. production) database.
 - `DATABASE_URL`: Database connection string (for production)
 - `FRONTEND_URL`: Frontend URL for CORS
 
@@ -102,10 +102,11 @@ Environment-based values (e.g. `ALLOWED_HOSTS`, `DEBUG`, `CORS_*`) are defined p
 
 ### Overriding environment for management commands
 
-By default, **ENVIRONMENT** is read from `.env` (or the default). You can override it for a single run by passing `--env` (or `-e`) to any management command. Values are those in [core/constants/env.py](core/constants/env.py) (`Environment` enum): `DEV`, `PROD`. Input is **case-insensitive** (e.g. `prod`, `PROD`); the value is always set in capital.
+By default, **ENVIRONMENT** is read from `.env` (or the default). You can override it for a single run by passing `--env` (or `-e`) to any management command. Values are those in [core/constants/env.py](core/constants/env.py) (`Environment` enum): `DEV`, `PROD`, `DEV_REMOTE`. Input is **case-insensitive** (e.g. `prod`, `dev_remote`); the value is always set in capital.
 
 ```bash
 python manage.py migrate --env=prod
+python manage.py migrate --env=dev_remote   # dev settings, DB from DATABASE_URL (e.g. prod)
 python manage.py runserver --env prod
 python manage.py test -e prod
 ```
